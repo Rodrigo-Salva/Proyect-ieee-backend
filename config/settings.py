@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     
     # Third party apps
     'rest_framework',
+    "drf_spectacular",
     'rest_framework_simplejwt',
     'corsheaders',
     
@@ -116,6 +117,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Django REST Framework settings
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
@@ -128,6 +130,13 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
     ],
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Mi API",
+    "DESCRIPTION": "Documentación oficial del backend 🚀",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 # JWT Settings
