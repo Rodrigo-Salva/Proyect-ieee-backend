@@ -74,7 +74,7 @@ DATABASES = {
         'NAME': config('DB_NAME', default='ieee_tecsup_db'),
         'USER': config('DB_USER', default='postgres'),
         'PASSWORD': config('DB_PASSWORD', default='28demarzo'),
-        'HOST': config('DB_HOST', default='localhost'),
+        'HOST': config('DB_HOST', default='db'),
         'PORT': config('DB_PORT', default='5432'),
     }
 }
@@ -156,6 +156,7 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:8000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
