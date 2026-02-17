@@ -6,6 +6,14 @@ class Chapter(models.Model):
     name = models.CharField(max_length=200, verbose_name='Nombre')
     description = models.TextField(verbose_name='Descripción')
     icon_url = models.URLField(blank=True, null=True, verbose_name='URL del Ícono')
+    branch = models.ForeignKey(
+        'Branch',
+        on_delete=models.CASCADE,
+        related_name='chapters',
+        verbose_name='Rama',
+        null=True,
+        blank=True
+    )
     is_active = models.BooleanField(default=True, verbose_name='Activo')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Creación')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Fecha de Actualización')
@@ -52,6 +60,14 @@ class Member(models.Model):
         blank=True,
         related_name='members',
         verbose_name='Capítulo'
+    )
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='members',
+        verbose_name='Rama (Directa)'
     )
     photo = models.ImageField(upload_to='members/', blank=True, null=True, verbose_name='Foto')
     is_active = models.BooleanField(default=True, verbose_name='Activo')

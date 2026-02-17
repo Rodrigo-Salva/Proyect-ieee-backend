@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
 from rest_framework import viewsets, status
@@ -19,6 +21,38 @@ class ContactFormViewSet(viewsets.ModelViewSet):
     search_fields = ['full_name', 'email', 'subject']
     ordering_fields = ['submitted_at']
     ordering = ['-submitted_at']
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        
+        # Send email notification
+        try:
+            subject = f"Nuevo mensaje de contacto: {instance.subject}"
+            message = f"""
+            Has recibido un nuevo mensaje de contacto:
+            
+            Nombre: {instance.full_name}
+            Email: {instance.email}
+            Asunto: {instance.subject}
+            
+            Mensaje:
+            {instance.message}
+            """
+            
+            # Send to admins or a specific email
+            # For now, using a placeholder or retrieving from settings if available
+            admin_email = getattr(settings, 'ADMIN_EMAIL', 'admin@example.com')
+            
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@ieeetecsup.com',
+                [admin_email],
+                fail_silently=True,
+            )
+        except Exception as e:
+            # Log error but don't fail the request
+            print(f"Error sending email: {e}")
     
     def get_permissions(self):
         if self.action == 'create':
