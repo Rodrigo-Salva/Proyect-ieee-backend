@@ -41,7 +41,6 @@ class News(models.Model):
 
 
 class Event(models.Model):
-    """Eventos y actividades"""
     
     title = models.CharField(max_length=300, verbose_name='Título')
     description = models.TextField(verbose_name='Descripción')

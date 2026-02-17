@@ -1,20 +1,6 @@
 from rest_framework import serializers
 from .models import Chapter, Branch, Member
 
-class ChapterSerializer(serializers.ModelSerializer):
-    """Serializer para Capítulos"""
-    
-    members_count = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = Chapter
-        fields = ['id', 'name', 'description', 'icon_url', 'branch', 'is_active', 'members_count', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
-    
-    def get_members_count(self, obj):
-        return obj.members.count()
-
-
 class MemberSerializer(serializers.ModelSerializer):
     """Serializer para Miembros"""
     
@@ -35,6 +21,21 @@ class MemberSerializer(serializers.ModelSerializer):
                 return request.build_absolute_uri(obj.photo.url)
             return obj.photo.url
         return None
+
+
+class ChapterSerializer(serializers.ModelSerializer):
+    """Serializer para Capítulos"""
+    
+    members_count = serializers.SerializerMethodField()
+    members = MemberSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Chapter
+        fields = ['id', 'name', 'description', 'icon_url', 'branch', 'members', 'is_active', 'members_count', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_members_count(self, obj):
+        return obj.members.count()
 
 
 class MemberDetailSerializer(serializers.ModelSerializer):
