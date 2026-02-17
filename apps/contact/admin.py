@@ -8,6 +8,15 @@ class ContactFormAdmin(admin.ModelAdmin):
     search_fields = ['full_name', 'email', 'subject']
     readonly_fields = ['submitted_at', 'full_name', 'email', 'subject', 'message']
 
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+    
+    def has_change_permission(self, request, obj=None):
+        return True
+
 @admin.register(SocialLink)
 class SocialLinkAdmin(admin.ModelAdmin):
     list_display = ['platform', 'display_order', 'is_active']
