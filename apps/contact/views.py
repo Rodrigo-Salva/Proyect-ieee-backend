@@ -21,11 +21,11 @@ class ContactFormViewSet(viewsets.ModelViewSet):
     search_fields = ['full_name', 'email', 'subject']
     ordering_fields = ['submitted_at']
     ordering = ['-submitted_at']
+    http_method_names = ['get', 'post', 'head'] # Restrict to read-only + creation
 
     def perform_create(self, serializer):
         instance = serializer.save()
         
-        # Send email notification
         try:
             subject = f"Nuevo mensaje de contacto: {instance.subject}"
             message = f"""
@@ -39,8 +39,6 @@ class ContactFormViewSet(viewsets.ModelViewSet):
             {instance.message}
             """
             
-            # Send to admins or a specific email
-            # For now, using a placeholder or retrieving from settings if available
             admin_email = getattr(settings, 'ADMIN_EMAIL', 'admin@example.com')
             
             send_mail(
@@ -51,7 +49,6 @@ class ContactFormViewSet(viewsets.ModelViewSet):
                 fail_silently=True,
             )
         except Exception as e:
-            # Log error but don't fail the request
             print(f"Error sending email: {e}")
     
     def get_permissions(self):

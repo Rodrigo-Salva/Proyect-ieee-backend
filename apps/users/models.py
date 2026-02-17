@@ -50,16 +50,17 @@ class User(AbstractUser):
     objects = UserManager()
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
-        ordering = ['-created_at']
     
     def __str__(self):
-        return f"{self.username} ({self.get_role_display()})"
+        return self.email
     
-    @property
-    def is_admin(self):
-        return self.role == 'admin' or self.is_superuser
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}".strip()
+
+    def get_short_name(self):
+        return self.first_name
