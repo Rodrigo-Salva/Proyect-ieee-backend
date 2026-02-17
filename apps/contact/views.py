@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
 from rest_framework import viewsets, status
@@ -19,6 +21,35 @@ class ContactFormViewSet(viewsets.ModelViewSet):
     search_fields = ['full_name', 'email', 'subject']
     ordering_fields = ['submitted_at']
     ordering = ['-submitted_at']
+    http_method_names = ['get', 'post', 'head'] # Restrict to read-only + creation
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        
+        try:
+            subject = f"Nuevo mensaje de contacto: {instance.subject}"
+            message = f"""
+            Has recibido un nuevo mensaje de contacto:
+            
+            Nombre: {instance.full_name}
+            Email: {instance.email}
+            Asunto: {instance.subject}
+            
+            Mensaje:
+            {instance.message}
+            """
+            
+            admin_email = getattr(settings, 'ADMIN_EMAIL', 'admin@example.com')
+            
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@ieeetecsup.com',
+                [admin_email],
+                fail_silently=True,
+            )
+        except Exception as e:
+            print(f"Error sending email: {e}")
     
     def get_permissions(self):
         if self.action == 'create':

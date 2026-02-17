@@ -4,9 +4,22 @@ from django.conf import settings
 class News(models.Model):
     """Noticias y actualizaciones"""
     
+    CATEGORY_CHOICES = (
+        ('announcement', 'Comunicado'),
+        ('event', 'Evento'),
+        ('achievement', 'Logro'),
+        ('general', 'General'),
+    )
+
     title = models.CharField(max_length=300, verbose_name='Título')
     content = models.TextField(verbose_name='Contenido')
     image = models.ImageField(upload_to='news/', blank=True, null=True, verbose_name='Imagen')
+    category = models.CharField(
+        max_length=20, 
+        choices=CATEGORY_CHOICES, 
+        default='general',
+        verbose_name='Categoría'
+    )
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 
@@ -28,7 +41,6 @@ class News(models.Model):
 
 
 class Event(models.Model):
-    """Eventos y actividades"""
     
     title = models.CharField(max_length=300, verbose_name='Título')
     description = models.TextField(verbose_name='Descripción')

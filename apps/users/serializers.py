@@ -14,7 +14,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
-    """Serializer detallado para usuario"""
     
     class Meta:
         model = User
