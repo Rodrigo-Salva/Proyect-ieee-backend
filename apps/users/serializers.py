@@ -22,21 +22,37 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
-    """Serializer para crear nuevo usuario"""
+    """Serializer para crear nuevo usuario (Admin)"""
+    
+    password = serializers.CharField(write_only=True, min_length=8)
+    
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'first_name', 'last_name', 'password', 'role']
+    
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    """Serializer para registro de usuarios públicos"""
     
     password = serializers.CharField(write_only=True, min_length=8)
     password_confirm = serializers.CharField(write_only=True, min_length=8)
     
     class Meta:
         model = User
-        fields = ['email', 'username', 'first_name', 'last_name', 'password', 'password_confirm', 'role']
+        fields = ['email', 'username', 'first_name', 'last_name', 'password', 'password_confirm']
     
     def validate(self, data):
-        if data['password'] != data.pop('password_confirm'):
+        if data['password'] != data.get('password_confirm'):
             raise serializers.ValidationError({'password': 'Las contraseñas no coinciden'})
         return data
     
     def create(self, validated_data):
+        validated_data.pop('password_confirm')
+        # Por defecto el rol es 'public' según el modelo
         user = User.objects.create_user(**validated_data)
         return user
 
