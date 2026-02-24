@@ -44,6 +44,19 @@ class User(AbstractUser):
         default='public',
         verbose_name='Rol'
     )
+    
+    # Profile fields
+    phone = models.CharField(max_length=20, blank=True, null=True, verbose_name='Teléfono')
+    biography = models.TextField(blank=True, null=True, verbose_name='Biografía')
+    ieee_id = models.CharField(max_length=50, blank=True, null=True, verbose_name='IEEE ID')
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, verbose_name='Avatar')
+    interested_chapters = models.ManyToManyField(
+        'organization.Chapter', 
+        blank=True, 
+        related_name='interested_users',
+        verbose_name='Capítulos de Interés'
+    )
+    
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Creación')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Fecha de Actualización')
     
@@ -64,3 +77,11 @@ class User(AbstractUser):
 
     def get_short_name(self):
         return self.first_name
+
+    @property
+    def is_admin(self):
+        return self.role == 'admin' or self.is_superuser
+    
+    @property
+    def is_public(self):
+        return self.role == 'public'

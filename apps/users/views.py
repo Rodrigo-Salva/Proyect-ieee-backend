@@ -62,20 +62,18 @@ class UserViewSet(viewsets.ModelViewSet):
             return [IsAdminUser()]
         return [IsAuthenticated()]
     
-    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    @action(detail=False, methods=['get', 'put', 'patch'], permission_classes=[IsAuthenticated])
     def profile(self, request):
-        """Obtener perfil del usuario autenticado"""
-        serializer = UserDetailSerializer(request.user)
+        """Obtener o actualizar el perfil del usuario autenticado"""
+        if request.method in ['PUT', 'PATCH']:
+            serializer = UserDetailSerializer(request.user, data=request.data, partial=True, context={'request': request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = UserDetailSerializer(request.user, context={'request': request})
         return Response(serializer.data)
-    
-    @action(detail=False, methods=['put'], permission_classes=[IsAuthenticated])
-    def update_profile(self, request):
-        """Actualizar perfil del usuario autenticado"""
-        serializer = UserDetailSerializer(request.user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=False, methods=['post'], permission_classes=[IsAdminUser])
     def activate_user(self, request):
