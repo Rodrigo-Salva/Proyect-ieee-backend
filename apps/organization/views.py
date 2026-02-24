@@ -5,9 +5,24 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .models import Chapter, Branch, Member
-from .serializers import ChapterSerializer, BranchSerializer, MemberSerializer, MemberDetailSerializer
+from .models import Chapter, Branch, Member, Position
+from .serializers import (
+    ChapterSerializer, BranchSerializer, MemberSerializer, 
+    MemberDetailSerializer, PositionSerializer
+)
 from apps.users.permissions import IsAdminOrReadOnly
+
+class PositionViewSet(viewsets.ModelViewSet):
+    """ViewSet para gestionar Cargos"""
+    
+    queryset = Position.objects.all()
+    serializer_class = PositionSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    filterset_fields = ['is_active']
+    search_fields = ['name', 'description']
+    ordering_fields = ['name', 'created_at']
+    ordering = ['name']
+
 
 class ChapterViewSet(viewsets.ModelViewSet):
     """ViewSet para gestionar Capítulos"""
@@ -46,8 +61,8 @@ class MemberViewSet(viewsets.ModelViewSet):
     
     queryset = Member.objects.all()
     permission_classes = [IsAdminOrReadOnly]
-    filterset_fields = ['chapter', 'is_active']
-    search_fields = ['full_name', 'email', 'position']
+    filterset_fields = ['chapter', 'is_active', 'position']
+    search_fields = ['full_name', 'email']
     ordering_fields = ['full_name', 'created_at']
     ordering = ['full_name']
     

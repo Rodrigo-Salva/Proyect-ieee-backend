@@ -5,6 +5,8 @@ venv/
 env/
 ENV/
 .venv/
+poetry.lock
+pypackage.toml
 
 # Python garbage files
 __pycache__/
@@ -28,27 +30,30 @@ wheels/
 .installed.cfg
 *.egg
 
-# Django migrations
-# (El usuario solicitó no subir las migraciones)
-**/migrations/*
-!**/migrations/__init__.py
-
-# Media and Static
-media/
-staticfiles/
-
-# Logs
-*.log
+# Django specific
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+media/
+staticfiles/
+static/
+
+# Migrations are IMPORTANT! We keep them in version control.
+# (Removed the previous ignore rule)
+
+# Logs
+*.log
 
 # IDEs
 .vscode/
 .idea/
 *.swp
 *.swo
+.project
+.pydevproject
+.settings/
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini

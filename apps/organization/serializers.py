@@ -1,17 +1,30 @@
 from rest_framework import serializers
-from .models import Chapter, Branch, Member
+from .models import Chapter, Branch, Member, Position
+
+class PositionSerializer(serializers.ModelSerializer):
+    """Serializer para Cargos"""
+    
+    class Meta:
+        model = Position
+        fields = ['id', 'name', 'description', 'is_active', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
 
 class MemberSerializer(serializers.ModelSerializer):
     """Serializer para Miembros"""
     
     chapter_name = serializers.CharField(source='chapter.name', read_only=True)
+    position_name = serializers.CharField(source='position.name', read_only=True)
     
     photo_url = serializers.SerializerMethodField()
     
     class Meta:
         model = Member
-        fields = ['id', 'full_name', 'email', 'phone', 'position', 'chapter', 'chapter_name', 
-                  'branch', 'photo', 'photo_url', 'is_active', 'created_at', 'updated_at']
+        fields = [
+            'id', 'full_name', 'email', 'phone', 'position', 'position_name', 
+            'chapter', 'chapter_name', 'branch', 'photo', 'photo_url', 
+            'is_active', 'created_at', 'updated_at'
+        ]
         read_only_fields = ['id', 'created_at', 'updated_at']
 
     def get_photo_url(self, obj):
@@ -42,6 +55,7 @@ class MemberDetailSerializer(serializers.ModelSerializer):
     """Serializer detallado para Miembros"""
     
     chapter = ChapterSerializer(read_only=True)
+    position = PositionSerializer(read_only=True)
     
     photo_url = serializers.SerializerMethodField()
     
