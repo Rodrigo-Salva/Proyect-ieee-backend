@@ -68,7 +68,7 @@ class Member(models.Model):
     """Miembros del equipo"""
     
     full_name = models.CharField(max_length=200, verbose_name='Nombre Completo')
-    email = models.EmailField(verbose_name='Correo Electrónico')
+    email = models.EmailField(unique=True, verbose_name='Correo Electrónico')
     phone = models.CharField(max_length=20, blank=True, null=True, verbose_name='Teléfono')
     position = models.ForeignKey(
         Position,

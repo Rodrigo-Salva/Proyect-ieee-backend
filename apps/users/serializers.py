@@ -27,6 +27,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
     """Serializer detallado para usuario con URL absoluta para avatar"""
     
     avatar_url = serializers.SerializerMethodField()
+    interested_chapters = serializers.SerializerMethodField()
     
     class Meta:
         model = User
@@ -44,6 +45,9 @@ class UserDetailSerializer(serializers.ModelSerializer):
         if request:
             return request.build_absolute_uri(obj.avatar.url)
         return obj.avatar.url
+
+    def get_interested_chapters(self, obj):
+        return [{'id': c.id, 'name': c.name} for c in obj.interested_chapters.all()]
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -132,3 +136,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             return data
 
         raise serializers.ValidationError({'detail': 'No se encontró ninguna cuenta activa con las credenciales proporcionadas'})
+
+
+class DashboardSerializer(serializers.Serializer):
+    """Serializer para el panel principal del usuario"""
+    
+    membership_status = serializers.CharField()
+    is_official_member = serializers.BooleanField()
+    upcoming_events = serializers.ListField()
+    recommended_resources = serializers.ListField()

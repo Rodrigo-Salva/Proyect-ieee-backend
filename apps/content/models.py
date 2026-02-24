@@ -51,8 +51,14 @@ class Event(models.Model):
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 
-        related_name='events',
+        related_name='events_created',
         verbose_name='Creado Por'
+    )
+    interested_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+        related_name='interested_events',
+        verbose_name='Usuarios Interesados'
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Creación')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Fecha de Actualización')

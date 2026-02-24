@@ -48,12 +48,21 @@ class EventSerializer(serializers.ModelSerializer):
     
     created_by_username = serializers.CharField(source='created_by.username', read_only=True)
     image = serializers.SerializerMethodField()
+    interested_count = serializers.IntegerField(source='interested_users.count', read_only=True)
+    is_interested = serializers.SerializerMethodField()
     
     class Meta:
         model = Event
         fields = ['id', 'title', 'description', 'event_date', 'location', 'image', 
-                'registration_link', 'created_by', 'created_by_username', 'created_at', 'updated_at']
+                'registration_link', 'interested_count', 'is_interested', 
+                'created_by', 'created_by_username', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_by', 'created_at', 'updated_at']
+
+    def get_is_interested(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.interested_users.filter(id=request.user.id).exists()
+        return False
 
     def get_image(self, obj):
         request = self.context.get('request')
