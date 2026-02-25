@@ -15,6 +15,10 @@ class NewsSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'author', 'created_at', 'updated_at']
 
     def get_image(self, obj):
+        # Priorizar la URL de ImageKit
+        if hasattr(obj, 'image_url') and obj.image_url:
+            return obj.image_url
+            
         request = self.context.get('request')
         if obj.image and hasattr(obj.image, 'url'):
             if request:
@@ -35,6 +39,10 @@ class NewsDetailSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'author', 'created_at', 'updated_at']
 
     def get_image(self, obj):
+        # Priorizar la URL de ImageKit
+        if hasattr(obj, 'image_url') and obj.image_url:
+            return obj.image_url
+            
         request = self.context.get('request')
         if obj.image and hasattr(obj.image, 'url'):
             if request:
@@ -65,6 +73,10 @@ class EventSerializer(serializers.ModelSerializer):
         return False
 
     def get_image(self, obj):
+        # Priorizar la URL de ImageKit
+        if hasattr(obj, 'image_url') and obj.image_url:
+            return obj.image_url
+            
         request = self.context.get('request')
         if obj.image and hasattr(obj.image, 'url'):
             if request:

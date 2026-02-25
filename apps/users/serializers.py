@@ -15,6 +15,10 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at']
 
     def get_avatar_url(self, obj):
+        # Priorizar la URL de ImageKit
+        if hasattr(obj, 'avatar_url') and obj.avatar_url:
+            return obj.avatar_url
+            
         if not obj.avatar:
             return None
         request = self.context.get('request')
@@ -39,6 +43,10 @@ class UserDetailSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at', 'updated_at']
 
     def get_avatar_url(self, obj):
+        # Priorizar la URL de ImageKit
+        if hasattr(obj, 'avatar_url') and obj.avatar_url:
+            return obj.avatar_url
+            
         if not obj.avatar:
             return None
         request = self.context.get('request')
