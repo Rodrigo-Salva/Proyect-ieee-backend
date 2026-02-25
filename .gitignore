@@ -1,2 +1,59 @@
+# Environment and Virtual Environment
 .env
-/venv
+.env.*
+venv/
+env/
+ENV/
+.venv/
+poetry.lock
+pypackage.toml
+
+# Python garbage files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django specific
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+static/
+
+# Migrations are IMPORTANT! We keep them in version control.
+# (Removed the previous ignore rule)
+
+# Logs
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.project
+.pydevproject
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
