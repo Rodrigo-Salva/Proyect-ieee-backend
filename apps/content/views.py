@@ -4,7 +4,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django.utils import timezone
 from .models import News, Event, Announcement
 from .serializers import NewsSerializer, NewsDetailSerializer, EventSerializer, AnnouncementSerializer
@@ -60,13 +60,29 @@ class EventViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
     
-    @action(detail=False, methods=['get'])
-    def upcoming(self, request):
-        """Obtener eventos próximos"""
-        now = timezone.now()
-        upcoming = Event.objects.filter(event_date__gte=now).order_by('event_date')[:10]
         serializer = self.get_serializer(upcoming, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def toggle_interest(self, request, pk=None):
+        """Alternar interés del usuario en un evento"""
+        event = self.get_object()
+        user = request.user
+        
+        if event.interested_users.filter(id=user.id).exists():
+            event.interested_users.remove(user)
+            message = "Ya no estás interesado en este evento"
+            is_interested = False
+        else:
+            event.interested_users.add(user)
+            message = "Ahora estás interesado en este evento"
+            is_interested = True
+            
+        return Response({
+            'detail': message,
+            'is_interested': is_interested,
+            'interested_count': event.interested_users.count()
+        })
 
 
 class AnnouncementViewSet(viewsets.ModelViewSet):

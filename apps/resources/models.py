@@ -21,6 +21,14 @@ class EducationalResource(models.Model):
         choices=CATEGORY_CHOICES,
         verbose_name='Categoría'
     )
+    chapter = models.ForeignKey(
+        'organization.Chapter',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='resources',
+        verbose_name='Capítulo'
+    )
     uploaded_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 

@@ -28,6 +28,10 @@ class MemberSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at', 'updated_at']
 
     def get_photo_url(self, obj):
+        # Priorizar la URL de ImageKit
+        if hasattr(obj, 'photo_url') and obj.photo_url:
+            return obj.photo_url
+            
         request = self.context.get('request')
         if obj.photo and hasattr(obj.photo, 'url'):
             if request:
@@ -66,6 +70,10 @@ class MemberDetailSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at', 'updated_at']
 
     def get_photo_url(self, obj):
+        # Priorizar la URL de ImageKit
+        if hasattr(obj, 'photo_url') and obj.photo_url:
+            return obj.photo_url
+            
         request = self.context.get('request')
         if obj.photo and hasattr(obj.photo, 'url'):
             if request:
@@ -79,8 +87,21 @@ class BranchSerializer(serializers.ModelSerializer):
     
     chapters = ChapterSerializer(many=True, read_only=True)
     members = MemberSerializer(many=True, read_only=True)
+    logo_url = serializers.SerializerMethodField()
     
     class Meta:
         model = Branch
-        fields = ['id', 'name', 'description', 'logo', 'chapters', 'members', 'is_active', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'description', 'logo', 'logo_url', 'chapters', 'members', 'is_active', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']
+
+    def get_logo_url(self, obj):
+        # Priorizar la URL de ImageKit
+        if hasattr(obj, 'logo_url') and obj.logo_url:
+            return obj.logo_url
+            
+        request = self.context.get('request')
+        if obj.logo and hasattr(obj.logo, 'url'):
+            if request:
+                return request.build_absolute_uri(obj.logo.url)
+            return obj.logo.url
+        return None
